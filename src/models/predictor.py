@@ -121,7 +121,7 @@ class Translator(object):
         return translations
 
     def translate(self,
-                  data_iter, step,
+                  data_iter, step, report_rogue,
                   attn_debug=False):
 
         self.model.eval()
@@ -132,8 +132,8 @@ class Translator(object):
 
         # raw_gold_path = self.args.result_path + '.%d.raw_gold' % step
         # raw_can_path = self.args.result_path + '.%d.raw_candidate' % step
-        self.gold_out_file = codecs.open(gold_path, 'w', 'utf-8')
-        self.can_out_file = codecs.open(can_path, 'w', 'utf-8')
+        # self.gold_out_file = codecs.open(gold_path, 'w', 'utf-8')
+        # self.can_out_file = codecs.open(can_path, 'w', 'utf-8')
 
         raw_src_path = self.args.result_path + '.%d.raw_src' % step
         self.src_out_file = codecs.open(raw_src_path, 'w', 'utf-8')
@@ -184,13 +184,14 @@ class Translator(object):
         self.gold_out_file.close()
         self.src_out_file.close()
 
-        if (step != -1):
+        if (step != -1 and report_rogue):
             rouges = self._report_rouge(gold_path, can_path)
             self.logger.info('Rouges at step %d \n%s' % (step, rouge_results_to_str(rouges)))
             if self.tensorboard_writer is not None:
                 self.tensorboard_writer.add_scalar('test/rouge1-F', rouges['rouge_1_f_score'], step)
                 self.tensorboard_writer.add_scalar('test/rouge2-F', rouges['rouge_2_f_score'], step)
                 self.tensorboard_writer.add_scalar('test/rougeL-F', rouges['rouge_l_f_score'], step)
+        return pred_str
 
     def _report_rouge(self, gold_path, can_path):
         self.logger.info("Calculating Rouge")

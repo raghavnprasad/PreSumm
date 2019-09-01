@@ -21,6 +21,7 @@ from others.utils import clean
 from prepro.utils import _get_word_ngrams
 
 import xml.etree.ElementTree as ET
+from nltk.tokenize import word_tokenize, sent_tokenize
 
 nyt_remove_words = ["photo", "graph", "chart", "map", "table", "drawing"]
 
@@ -327,6 +328,30 @@ def _format_to_bert(params):
     datasets = []
     gc.collect()
 
+def str_format_to_bert( source, args, save_file):
+
+    bert = BertData(args)
+
+    logger.info('Processing %s' % source)
+    tgt = [word_tokenize(t) for t in sent_tokenize(source)[:3] ]
+    source = [ word_tokenize(t) for t in sent_tokenize(source) ]
+
+    sent_labels = greedy_selection(source[:args.max_src_nsents], tgt, 3)
+    if (args.lower):
+        source = [' '.join(s).lower().split() for s in source]
+        tgt = [' '.join(s).lower().split() for s in tgt]
+    b_data = bert.preprocess(source, tgt, sent_labels, use_bert_basic_tokenizer=args.use_bert_basic_tokenizer, is_test=True)
+
+    if (b_data is None):
+        return
+    src_subtoken_idxs, sent_labels, tgt_subtoken_idxs, segments_ids, cls_ids, src_txt, tgt_txt = b_data
+    b_data_dict = {"src": src_subtoken_idxs, "tgt": tgt_subtoken_idxs,
+                       "src_sent_labels": sent_labels, "segs": segments_ids, 'clss': cls_ids,
+                       'src_txt': src_txt, "tgt_txt": tgt_txt}
+
+    datasets= [b_data_dict]
+    logger.info('Saving to %s' % save_file)
+    torch.save(datasets, save_file)
 
 def format_to_lines(args):
     corpus_mapping = {}
