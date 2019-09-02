@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-    Main training workflow
+    Inference entrance
 """
 from __future__ import division
 
@@ -25,7 +25,7 @@ def str2bool(v):
 
 
 
-def init_args():
+def load_model():
     parser = argparse.ArgumentParser()
     parser.add_argument("-task", default='abs', type=str, choices=['ext', 'abs'])
     parser.add_argument("-encoder", default='bert', type=str, choices=['bert', 'baseline'])
@@ -127,10 +127,6 @@ def init_args():
     device = "cpu" if args.visible_gpus == '-1' else "cuda"
     device_id = 0 if device == "cuda" else -1
 
-    return args, device_id
-
-if __name__ == '__main__':
-    args, device_id = init_args()
     print(args.task, args.mode) 
 
     cp = args.test_from
@@ -141,12 +137,27 @@ if __name__ == '__main__':
 
     predictor = load_models_abs(args, device_id, cp, step)
 
+    return args, device_id, cp, step, predictor
+
+if __name__ == '__main__':
+    args, device_id, cp, step, predictor = load_model()
     with open('foo.txt') as f:
         source=f.read().rstrip()
 
     data_builder.str_format_to_bert(  source, args, '../bert_data_test/cnndm.test.0.bert.pt') 
     args.bert_data_path= '../bert_data_test/cnndm'
-    test_text_abs(args, device_id, cp, step, predictor)
+    tgt, time_used = test_text_abs(args, device_id, cp, step, predictor)
+
+    # some postprocessing 
+
+    sentences = tgt.split('<q>')
+    sentences = [sent.capitalize() for sent in sentences]
+    sentences = '. '.join(sentences).rstrip()
+    sentences = sentences.replace(' ,', ',')
+    sentences = sentences+'.'
+
+    print("summary [{}]".format(sentences))
+    print("time used {}".format(time_used))
 
 
 

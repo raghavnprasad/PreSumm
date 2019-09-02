@@ -257,8 +257,7 @@ def test_text_abs(args, device_id, pt, step, predictor):
     test_iter = data_loader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
-    print(predictor.translate(test_iter, step, args.report_rouge))
-    print("completed test_text_abs", str(time.time()-start_t))
+    return predictor.translate(test_iter, step, args.report_rouge), str(time.time()-start_t)
 
 def baseline(args, cal_lead=False, cal_oracle=False):
     test_iter = data_loader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
