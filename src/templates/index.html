@@ -19,15 +19,19 @@
   </head>
   <body>
     <div class="container">
-        <h1> Extractive and abstractive Summarization</h1>
-        <br> Updated Bert model 
+        <h1> Text Summarization</h1>
+        <br> This demo is based on an updated Bert model combining both extraction technique and abstraction technique.
+        <br>
+        <br> To try demo, please either copy/paste text into the text area below, or click the button below to use a random email campaign fetched from real campaign data. 
+        <br>
+        <br> <button type="submit" class="btn btn-success" id="random-pick">Use a random email campaign</button> 
         <br>
         <form role="form" method="post" onsubmit="return false;">
             <div class="form-group">
                 <textarea cols="120" rows="20" id="message" name="story" required></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Find summary</button>
-            <button type="submit" class="btn btn-success" id="try-again">Try a different text</button>
+            <button type="submit" class="btn btn-success" id="try-again">Clear</button>
 </form>
         <br>
         <!-- Image loader -->
