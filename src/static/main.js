@@ -9,8 +9,6 @@ $(document).ready(function() {
     console.log("the form has beeen submitted");
 
     // grab values
-    //valueOne = $('input[name="location"]').val();
-    //console.log(valueOne)
     txt = $("#message").val();
     txt=txt.replace(/\"/g, "");
     txt=txt.replace(/\'/g, "");
@@ -48,13 +46,46 @@ $(document).ready(function() {
        $("#loader").hide();
       }
     });
-
   });
 
   $('#try-again').on('click', function(){
     $('#message').val('').show();
     $('#try-again').hide();
     $('#results').html('');
+  });
+
+  $('#random-pick').on('click', function(){
+    console.log("random clicked ");
+    $('#try-again').hide();
+    $('#results').html('');
+
+    $.ajax({
+      type: "GET",
+      url: "/random",
+      beforeSend: function(){
+        // Show image container
+         $('#loader').show();
+      },
+      success: function(results) {
+        console.log(results);
+
+        if (results.txt.length > 0) {
+          $('#message').val(results.txt).show();
+          const popup = window.open('', '', 'width=700, height=700');
+          popup.document.open();
+          popup.document.write(results.html_raw);
+        } else {
+          $('#messages').val('Something went terribly wrong! Please try again.')
+        }
+      },
+      error: function(error) {
+        console.log(error)
+      },
+       complete:function(data){
+       // Hide image container
+       $("#loader").hide();
+      }
+    });
   });
 
 });
