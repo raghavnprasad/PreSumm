@@ -5,7 +5,10 @@
 from __future__ import division
 
 import argparse
-import os
+import os, glob
+from pathlib import Path
+
+import random
 from others.logging import init_logger
 
 from train_abstractive import validate_abs, train_abs, baseline, test_abs, test_text_abs, load_models_abs
@@ -14,7 +17,7 @@ from prepro import data_builder
 from summarizer import load_model
 
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request,Response, jsonify
 app = Flask(__name__)
 from flask_cors import CORS
 CORS(app)
@@ -26,7 +29,28 @@ print(args.task, args.mode)
 
 
 print(" model initialized")
+CAMPAIGN_TEXT='../sample_campaigns/*.txt'
+files=glob.glob(CAMPAIGN_TEXT)
+print("No. sample campaigns found {}".format(len(files)))
 
+@app.route('/random', methods=['GET', 'POST'])
+def random_pick():
+    if request.method == 'GET':
+        res={}
+        try:
+            idx= random.randrange(0, len(files))
+            print(files[idx])
+            with open(files[idx]) as f:
+                res['txt']=f.read().rstrip()
+            p = Path(files[idx])
+            html_name= str(p.with_suffix('')) +'.html'
+            print(html_name)
+            with open(html_name) as f:
+                res['html_raw']= f.read()
+        except:
+            print("Error ")
+        return jsonify(res)
+        #return Response(res, mimetype='text/plain')
 
 @app.route('/summary', methods=['GET', 'POST'])
 def translate():
