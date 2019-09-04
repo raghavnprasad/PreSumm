@@ -1,14 +1,13 @@
 $(document).ready(function() {
   console.log("ready!");
 
-  $('#try-again').hide();
-
   // on form submission ...
   $('form').on('submit', function() {
 
     console.log("the form has beeen submitted");
 
     // grab values
+
     txt = $("#message").val();
     txt=txt.replace(/\"/g, "");
     txt=txt.replace(/\'/g, "");
@@ -29,7 +28,6 @@ $(document).ready(function() {
         console.log(results);
 
         if (results.tgt.length > 0) {
-          $('#try-again').show();
           h='<span style="font-weight:bold">Summary: </span>'
           $('#results').html(h+ results.tgt);
 
@@ -48,15 +46,15 @@ $(document).ready(function() {
     });
   });
 
-  $('#try-again').on('click', function(){
+  $('#input-text').on('click', function(){
+    var ifrm = document.getElementById('myIframe');
+    ifrm.style.display = "none";
     $('#message').val('').show();
-    $('#try-again').hide();
     $('#results').html('');
   });
 
   $('#random-pick').on('click', function(){
     console.log("random clicked ");
-    $('#try-again').hide();
     $('#results').html('');
 
     $.ajax({
@@ -71,9 +69,16 @@ $(document).ready(function() {
 
         if (results.txt.length > 0) {
           $('#message').val(results.txt).show();
-          const popup = window.open('', '', 'width=700, height=700');
-          popup.document.open();
-          popup.document.write(results.html_raw);
+          console.log($('#message').val());
+          $('#message').hide();
+
+          var ifrm = document.getElementById('myIframe');
+          var doc = ifrm.contentDocument? ifrm.contentDocument: ifrm.contentWindow.document;
+
+          doc.open();
+          doc.write(results.html_raw);
+          doc.close();
+          ifrm.style.display = "block";
         } else {
           $('#messages').val('Something went terribly wrong! Please try again.')
         }
@@ -86,6 +91,7 @@ $(document).ready(function() {
        $("#loader").hide();
       }
     });
+
   });
 
 });
