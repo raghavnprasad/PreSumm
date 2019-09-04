@@ -6,14 +6,8 @@
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <style>
         .container {
-            max-width: 500px;
+            max-width: 800px;
             padding-top: 20px;
-        }
-        input {
-            max-width: 250px;
-        }
-        .avatar {
-            max-width: 150px;
         }
     </style>
   </head>
@@ -21,26 +15,33 @@
     <div class="container">
         <h1> Text Summarization</h1>
         <br> This demo is based on an updated Bert model combining both extraction technique and abstraction technique.
+        <br> To try demo, please either copy/paste text into the text area below, or click the button below to fetch a random email campaign. 
         <br>
-        <br> To try demo, please either copy/paste text into the text area below, or click the button below to use a random email campaign fetched from real campaign data. 
+        <div id="buttons">
+        <br> <button type="submit" class="btn btn-success" id="random-pick">Use a random campaign</button> 
+             <button type="submit" class="btn btn-success" id="input-text">Input text</button> 
         <br>
-        <br> <button type="submit" class="btn btn-success" id="random-pick">Use a random email campaign</button> 
+        </div>
         <br>
-        <form role="form" method="post" onsubmit="return false;">
-            <div class="form-group">
-                <textarea cols="120" rows="20" id="message" name="story" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Find summary</button>
-            <button type="submit" class="btn btn-success" id="try-again">Clear</button>
-</form>
-        <br>
+        <div id="results" width="300">
+        </div>
         <!-- Image loader -->
         <div id='loader' style='display: none;'>
         <img src='https://cdn.dribbble.com/users/437847/screenshots/3770748/comp_3.gif' width='64px' height='64px'>
         </div>
-<!-- Image loader -->
-        <div id="results">
-        </div>
+        <br>
+        <form role="form" method="post" onsubmit="return false;" novalidate>
+            <button type="submit" class="btn btn-primary">Find summary</button>
+            <div class="form-group">
+                <textarea cols="120" rows="20" id="message" name="story" required></textarea>
+            </div>
+        </form>
+        <!-- Iframe for campaign -->
+        <iframe id='myIframe' frameborder="0" width="100%" height="600"   style='display: none'>
+        <p>Your browser does not support iframes.</p>
+        </iframe>
+
+        <br>
     </div>
     <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
