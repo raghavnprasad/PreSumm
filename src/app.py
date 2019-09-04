@@ -77,7 +77,8 @@ def translate():
                 sentences = [sent.capitalize() for sent in sentences]
                 sentences = '. '.join(sentences).rstrip()
                 sentences = sentences.replace(' ,', ',')
-                sentences = sentences+'.'
+                if sentences[-1] not in ['.','?','!']:
+                    sentences = sentences+'.'
                 res['tgt'] = sentences
                 print("completed {} ".format(time_used))
             except:
@@ -104,7 +105,7 @@ def server_error(e):
     """.format(e), 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8081))
+    port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader=True)
     app.run(debug=True)
 
