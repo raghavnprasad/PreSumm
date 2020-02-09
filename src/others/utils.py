@@ -82,7 +82,7 @@ def test_rouge(temp_dir, cand, ref):
         r.model_filename_pattern = 'ref.#ID#.txt'
         r.system_filename_pattern = r'cand.(\d+).txt'
         rouge_results = r.convert_and_evaluate()
-        print(rouge_results)
+        # print(rouge_results)
         results_dict = r.output_to_dict(rouge_results)
     finally:
         pass

@@ -249,7 +249,6 @@ def test_abs(args, device_id, pt, step):
     predictor = build_predictor(args, tokenizer, symbols, model, logger)
     predictor.translate(test_iter, step)
 
-
 def test_text_abs(args, device_id, pt, step, predictor):
     start_t= time.time()
 
